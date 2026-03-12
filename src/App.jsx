@@ -7,18 +7,25 @@ import Reports from './components/Reports.jsx';
 import Login from './components/Login.jsx';
 
 function App() {
-  // New state to track if the user is authenticated
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentView, setCurrentView] = useState('Dashboard');
 
-  // If they are NOT authenticated, ONLY show the Login screen
   if (!isAuthenticated) {
     return <Login onLogin={() => setIsAuthenticated(true)} />;
   }
 
-  // If they ARE authenticated, show the rest of the application
+  // Handle logging out and resetting the app state
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentView('Dashboard'); 
+  };
+
   return (
-    <MainLayout currentView={currentView} setCurrentView={setCurrentView}>
+    <MainLayout 
+      currentView={currentView} 
+      setCurrentView={setCurrentView}
+      onLogout={handleLogout} // Pass the logout function down
+    >
       {currentView === 'Dashboard' && <Dashboard />}
       {currentView === 'Task List' && <TaskList />}
       {currentView === 'Attendance' && <Attendance />}

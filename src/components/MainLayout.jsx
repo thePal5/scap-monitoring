@@ -1,6 +1,27 @@
-import React from 'react';
-import { Box, CloseButton, Flex, Icon, Text, Drawer, DrawerContent, useDisclosure, IconButton, VStack, HStack, Avatar } from '@chakra-ui/react';
-import { FiHome, FiCheckSquare, FiClock, FiFileText, FiMenu, FiBell } from 'react-icons/fi';
+import { 
+  Box, 
+  CloseButton, 
+  Flex, 
+  Icon, 
+  Text, 
+  Drawer, 
+  DrawerContent, 
+  useDisclosure, 
+  IconButton, 
+  VStack, 
+  HStack, 
+  Avatar, 
+  Button 
+} from '@chakra-ui/react';
+import { 
+  FiHome, 
+  FiCheckSquare, 
+  FiClock, 
+  FiFileText, 
+  FiMenu, 
+  FiBell, 
+  FiLogOut // Added the logout icon
+} from 'react-icons/fi';
 
 const LinkItems = [
   { name: 'Dashboard', icon: FiHome },
@@ -9,26 +30,47 @@ const LinkItems = [
   { name: 'Reports', icon: FiFileText },
 ];
 
-const SidebarContent = ({ onClose, currentView, setCurrentView, ...rest }) => {
+const SidebarContent = ({ onClose, currentView, setCurrentView, onLogout, ...rest }) => {
   return (
     <Box bg="surface.white" borderRight="1px" borderRightColor="surface.gray" w={{ base: 'full', md: 60 }} pos="fixed" h="full" {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="heading" fontWeight="bold" color="brand.900">SCAP</Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      <VStack spacing={2} align="stretch" px={4}>
-        {LinkItems.map((link) => {
-          const isActive = currentView === link.name;
-          return (
-            <Box key={link.name} as="a" href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
-              <Flex align="center" p="4" mx="2" borderRadius="lg" role="group" cursor="pointer" transition="all 0.2s" bg={isActive ? 'brand.500' : 'transparent'} color={isActive ? 'white' : 'gray.600'} _hover={{ bg: isActive ? 'brand.600' : 'brand.50', color: isActive ? 'white' : 'brand.900' }} onClick={() => { setCurrentView(link.name); if (onClose) onClose(); }}>
-                <Icon mr="4" fontSize="16" as={link.icon} />
-                <Text fontWeight="medium">{link.name}</Text>
-              </Flex>
-            </Box>
-          );
-        })}
-      </VStack>
+      
+      {/* We use a Flex container that takes up the remaining height of the screen minus the header (80px).
+        justifyContent="space-between" pushes the navigation links to the top, and the logout button to the bottom.
+      */}
+      <Flex direction="column" justify="space-between" h="calc(100vh - 80px)" pb={6}>
+        <VStack spacing={2} align="stretch" px={4}>
+          {LinkItems.map((link) => {
+            const isActive = currentView === link.name;
+            return (
+              <Box key={link.name} as="a" href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+                <Flex align="center" p="4" mx="2" borderRadius="lg" role="group" cursor="pointer" transition="all 0.2s" bg={isActive ? 'brand.500' : 'transparent'} color={isActive ? 'white' : 'gray.600'} _hover={{ bg: isActive ? 'brand.600' : 'brand.50', color: isActive ? 'white' : 'brand.900' }} onClick={() => { setCurrentView(link.name); if (onClose) onClose(); }}>
+                  <Icon mr="4" fontSize="16" as={link.icon} />
+                  <Text fontWeight="medium">{link.name}</Text>
+                </Flex>
+              </Box>
+            );
+          })}
+        </VStack>
+
+        {/* The Logout Button */}
+        <Box px={6}>
+          <Button
+            w="full"
+            variant="ghost"
+            colorScheme="red"
+            leftIcon={<FiLogOut />}
+            justifyContent="flex-start"
+            onClick={onLogout}
+            _hover={{ bg: 'red.50', color: 'red.600' }}
+          >
+            Log Out
+          </Button>
+        </Box>
+      </Flex>
     </Box>
   );
 };
@@ -60,14 +102,14 @@ const MobileNav = ({ onOpen, currentView, ...rest }) => {
   );
 };
 
-export default function MainLayout({ children, currentView, setCurrentView }) {
+export default function MainLayout({ children, currentView, setCurrentView, onLogout }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg="surface.gray">
-      <SidebarContent onClose={onClose} display={{ base: 'none', md: 'block' }} currentView={currentView} setCurrentView={setCurrentView} />
+      <SidebarContent onClose={onClose} display={{ base: 'none', md: 'block' }} currentView={currentView} setCurrentView={setCurrentView} onLogout={onLogout} />
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} returnFocusOnClose={false} onOverlayClick={onClose} size="full">
         <DrawerContent>
-          <SidebarContent onClose={onClose} currentView={currentView} setCurrentView={setCurrentView} />
+          <SidebarContent onClose={onClose} currentView={currentView} setCurrentView={setCurrentView} onLogout={onLogout} />
         </DrawerContent>
       </Drawer>
       <MobileNav onOpen={onOpen} currentView={currentView} />
