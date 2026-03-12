@@ -71,7 +71,7 @@ export default function Dashboard() {
 
             <SimpleGrid columns={2} spacing={4}>
               <Button
-                size="lg"
+                size="md"
                 h="14"
                 colorScheme={clockStatus === 'logged_out' ? "blue" : "red"}
                 bg={clockStatus === 'logged_out' ? "brand.500" : "red.500"}
@@ -84,7 +84,7 @@ export default function Dashboard() {
               </Button>
 
               <Button
-                size="lg"
+                size="md"
                 h="14"
                 variant={clockStatus === 'logged_out' ? "outline" : "solid"}
                 colorScheme="orange"
